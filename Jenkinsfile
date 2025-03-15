@@ -1,8 +1,7 @@
 pipeline {
     agent any
-    
 
-        tools {
+    tools {
         git 'Default'  // This should match the name you gave the Git tool in the Global Tool Configuration
     }
 
@@ -14,15 +13,15 @@ pipeline {
         ANSIBLE_HOST = ''  // This will be set later dynamically from Terraform output
         ANSIBLE_SSH_USER = 'ubuntu'
     }
-    
+
     stages {
         stage('Clone Git Repo') {
             steps {
                 // Checkout the code from the GitHub repo containing your Terraform code and Ansible playbook
-                git 'https://github.com/chavirenu3/newproject.git'
+                git credentialsId: 'gitchavirenu', url: 'https://github.com/chavirenu3/newproject.git'
             }
         }
-        
+
         stage('Terraform Init') {
             steps {
                 script {
@@ -49,7 +48,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Get EC2 Public IP') {
             steps {
                 script {
@@ -76,10 +75,10 @@ pipeline {
         }
     }
 
-    // post {
-    //     always {
-    //         // Clean up workspace, files, etc.
-    //         echo 'Cleaning up...'
-    //     }
-    // }
+    post {
+        always {
+            // Clean up workspace, files, etc.
+            echo 'Cleaning up...'
+        }
+    }
 }
