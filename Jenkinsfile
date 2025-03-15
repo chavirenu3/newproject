@@ -25,8 +25,7 @@ pipeline {
         stage('Terraform Init') {
             steps {
                 script {
-                    // Change the directory to the location of your Terraform code
-                    dir('/home/ubuntu/my_aws_terraform_ansible_project/terraform_codes') {
+    {
                         // Initialize Terraform with AWS credentials set as environment variables
                         sh '''
                         export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
@@ -41,8 +40,7 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 script {
-                    // Change the directory to the location of your Terraform code
-                    dir('/home/ubuntu/my_aws_terraform_ansible_project/terraform_codes') {
+     {
                         // Apply Terraform to create EC2 instance
                         // Use `-auto-approve` to avoid manual approval
                         sh '''
@@ -58,8 +56,7 @@ pipeline {
         stage('Get EC2 Public IP') {
             steps {
                 script {
-                    // Change the directory to the location of your Terraform code
-                    dir('/home/ubuntu/my_aws_terraform_ansible_project/terraform_codes') {
+                    {
                         // Get the EC2 instance public IP after Terraform has created it
                         // We will store this in an environment variable for later use
                         ANSIBLE_HOST = sh(script: "terraform output -raw instance_public_ip", returnStdout: true).trim()
