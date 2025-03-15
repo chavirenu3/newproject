@@ -18,19 +18,22 @@ pipeline {
         stage('Clone Git Repo') {
             steps {
                 // Checkout the code from the GitHub repo containing your Terraform code and Ansible playbook
-                git credentialsId: 'gitchavirenu', url: 'https://github.com/chavirenu3/newproject.git'
+                git 'https://github.com/chavirenu3/newproject.git'
             }
         }
 
         stage('Terraform Init') {
             steps {
                 script {
-                    // Initialize Terraform with AWS credentials set as environment variables
-                    sh '''
-                    export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-                    export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-                    terraform init
-                    '''
+                    // Change the directory to the location of your Terraform code
+                    dir('/home/ubuntu/my_aws_terraform_ansible_project/terraform_codes') {
+                        // Initialize Terraform with AWS credentials set as environment variables
+                        sh '''
+                        export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                        export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+                        terraform init
+                        '''
+                    }
                 }
             }
         }
@@ -38,13 +41,16 @@ pipeline {
         stage('Terraform Apply') {
             steps {
                 script {
-                    // Apply Terraform to create EC2 instance
-                    // Use `-auto-approve` to avoid manual approval
-                    sh '''
-                    export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-                    export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-                    terraform apply -auto-approve
-                    '''
+                    // Change the directory to the location of your Terraform code
+                    dir('/home/ubuntu/my_aws_terraform_ansible_project/terraform_codes') {
+                        // Apply Terraform to create EC2 instance
+                        // Use `-auto-approve` to avoid manual approval
+                        sh '''
+                        export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                        export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+                        terraform apply -auto-approve
+                        '''
+                    }
                 }
             }
         }
@@ -52,10 +58,13 @@ pipeline {
         stage('Get EC2 Public IP') {
             steps {
                 script {
-                    // Get the EC2 instance public IP after Terraform has created it
-                    // We will store this in an environment variable for later use
-                    ANSIBLE_HOST = sh(script: "terraform output -raw instance_public_ip", returnStdout: true).trim()
-                    echo "EC2 Public IP: ${ANSIBLE_HOST}"
+                    // Change the directory to the location of your Terraform code
+                    dir('/home/ubuntu/my_aws_terraform_ansible_project/terraform_codes') {
+                        // Get the EC2 instance public IP after Terraform has created it
+                        // We will store this in an environment variable for later use
+                        ANSIBLE_HOST = sh(script: "terraform output -raw instance_public_ip", returnStdout: true).trim()
+                        echo "EC2 Public IP: ${ANSIBLE_HOST}"
+                    }
                 }
             }
         }
@@ -63,22 +72,18 @@ pipeline {
         stage('Ansible Playbook') {
             steps {
                 script {
-                    // Run Ansible playbook to install Nginx on the EC2 instance
-                    sh """
-                    export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-                    export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-                    ansible-playbook -i '${ANSIBLE_HOST},' install_nginx.yml \
-                    --extra-vars 'host=${ANSIBLE_HOST} ansible_ssh_user=${ANSIBLE_SSH_USER} ansible_ssh_private_key_file=${TF_VAR_private_key}'
-                    """
+                    // Change the directory to the location of your Ansible playbook
+                    dir('/home/ubuntu/my_aws_terraform_ansible_project/terraform_codes') {
+                        // Run Ansible playbook to install Nginx on the EC2 instance
+                        sh """
+                        export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+                        export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+                        ansible-playbook -i '${ANSIBLE_HOST},' install_nginx.yml \
+                        --extra-vars 'host=${ANSIBLE_HOST} ansible_ssh_user=${ANSIBLE_SSH_USER} ansible_ssh_private_key_file=${TF_VAR_private_key}'
+                        """
+                    }
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            // Clean up workspace, files, etc.
-            echo 'Cleaning up...'
         }
     }
 }
