@@ -1,6 +1,11 @@
 pipeline {
     agent any
     
+
+        tools {
+        git 'Default'  // This should match the name you gave the Git tool in the Global Tool Configuration
+    }
+    
     environment {
         // Define environment variables for AWS credentials from Jenkins Secret Text
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')  // Secret text for AWS Access Key ID
