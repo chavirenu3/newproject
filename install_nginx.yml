@@ -1,0 +1,14 @@
+---
+- name: Install NGINX on EC2 instance
+  hosts: "{{ host }}"
+  become: yes
+
+  tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install NGINX
+      apt:
+        name: nginx
+        state: present
