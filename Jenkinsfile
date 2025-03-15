@@ -5,7 +5,7 @@ pipeline {
         tools {
         git 'Default'  // This should match the name you gave the Git tool in the Global Tool Configuration
     }
-    
+
     environment {
         // Define environment variables for AWS credentials from Jenkins Secret Text
         AWS_ACCESS_KEY_ID = credentials('AWS_ACCESS_KEY_ID')  // Secret text for AWS Access Key ID
@@ -19,7 +19,7 @@ pipeline {
         stage('Clone Git Repo') {
             steps {
                 // Checkout the code from the GitHub repo containing your Terraform code and Ansible playbook
-                git 'https://github.com/your_username/your_repo.git'
+                git 'https://github.com/chavirenu3/newproject.git'
             }
         }
         
