@@ -44,8 +44,7 @@ pipeline {
 
                     // Run the Ansible playbook with the 'StrictHostKeyChecking=no' option
                     sh """
-                    ansible-playbook -i ${instance_ip}, install_nginx.yml --extra-vars "host=${instance_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/my_aws_terraform_ansible_project/terraform_codes/mynewsshkey.pem" \
-                    -e ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+                    ansible-playbook -i "$(terraform output -raw instance_public_ip)," install_nginx.yml --extra-vars "host=$(terraform output -raw instance_public_ip) ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenkins/jobs/myproject/workspace/mynewsshkey.pem"
                     """
                 }
             }
