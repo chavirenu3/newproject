@@ -8,4 +8,19 @@ pipeline {
             }
         }
     }
+
+        stages {
+        stage('Terraform INIT') {
+            steps {
+                sh "terraform init"
+            }
+        }
+    }
+            stages {
+        stage('Terraform Plan') {
+            steps {
+                sh "terraform plan"
+            }
+        }
+    }
 }
