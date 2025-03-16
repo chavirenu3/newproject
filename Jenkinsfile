@@ -38,6 +38,17 @@ pipeline {
             }
         }
 
+        // Stage to show EC2 public IP after Terraform Apply
+        stage('Show EC2 Public IP') {
+            steps {
+                script {
+                    // Get the instance's public IP from Terraform output
+                    def instance_ip = sh(script: 'terraform output -raw instance_public_ip', returnStdout: true).trim()
+                    echo "EC2 instance public IP: ${instance_ip}"
+                }
+            }
+        }
+
         stage('Ansible Playbook Run') {
             steps {
                 script {
