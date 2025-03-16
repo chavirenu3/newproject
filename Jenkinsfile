@@ -36,22 +36,10 @@ pipeline {
                 script {
                     // Get the instance's public IP from Terraform output
                     def instance_ip = sh(script: 'terraform output -raw instance_public_ip', returnStdout: true).trim()
+                    sh '''
+ansible-playbook -i "$(terraform output -raw instance_public_ip)," install_nginx.yml --extra-vars "host=$(terraform output -raw instance_public_ip) ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenkins/jobs/myproject/workspace/mynewsshkey.pem" -e "ansible_ssh_common_args='-o StrictHostKeyChecking=no'"
 
-                    // Optionally, check if the IP is available before proceeding
-                    if (!instance_ip) {
-                        error "Failed to retrieve public IP from Terraform output."
-                    }
-
-                    // Add the instance's SSH key to known hosts to prevent "Host key verification failed"
-                    sh """
-                    ssh-keyscan -H ${instance_ip} >> ~/.ssh/known_hosts
-                    """
-
-                    // Run the Ansible playbook with the appropriate SSH private key and instance IP
-                    sh """
-                    ansible-playbook -i ${instance_ip}, install_nginx.yml --extra-vars "host=${instance_ip} ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenkins/jobs/myproject/workspace/mynewsshkey.pem" \
-                    -e ansible_ssh_common_args='-o StrictHostKeyChecking=no'
-                    """
+                    '''
                 }
             }
         }
