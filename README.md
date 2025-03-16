@@ -32,3 +32,6 @@ Ho sakta hai terraform apply ke baad, hme warm up period bhi pipeline mai dena p
 
 Note: Apki keypair ko permission honi chahiye
 chmod 600 /var/lib/jenkins/jobs/myproject/workspace/mynewsshkey.pem
+
+
+agar apko vs code ko apne ec2 se connect krna hai toh uske liye bi steps desktop par hai.
