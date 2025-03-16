@@ -12,3 +12,26 @@
       apt:
         name: nginx
         state: present
+
+    - name: Create custom index.html
+      copy:
+        content: |
+          <html>
+            <head><title>Welcome</title></head>
+            <body>
+              <h1>Welcome to my YouTube channel</h1>
+            </body>
+          </html>
+        dest: /var/www/html/index.html
+        mode: '0644'
+
+    - name: Ensure NGINX is started and enabled
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Reload NGINX to apply changes
+      service:
+        name: nginx
+        state: reloaded
