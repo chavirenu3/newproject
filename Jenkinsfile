@@ -14,7 +14,11 @@ pipeline {
             }
         }
     
-
+               stage('Terraform Destroy') {
+            steps {
+                sh "terraform destroy --auto-approve"
+            }
+        }
         
         //     stage('Terraform INIT') {
         //     steps {
@@ -23,28 +27,28 @@ pipeline {
         // }
     
        
-            stage('Terraform Plan') {
-            steps {
-                sh "terraform plan"
-            }
-        }
+        //     stage('Terraform Plan') {
+        //     steps {
+        //         sh "terraform plan"
+        //     }
+        // }
 
-            stage('Terraform apply') {
-            steps {
-                sh "terraform apply --auto-approve"
-            }
-        }
-            stage('Sleep 2 minute for warm up') {
-            steps {
-                sh "sleep 120"
-            }
-        }
-             stage('Ansible Playbook run') {
-            steps {
-                sh '''
-                 ansible-playbook -i "$(terraform output -raw instance_public_ip)," install_nginx.yml --extra-vars "host=$(terraform output -raw instance_public_ip) ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/my_aws_terraform_ansible_project/terraform_codes/mynewsshkey.pem"
-                '''
-            }
-        }
+        //     stage('Terraform apply') {
+        //     steps {
+        //         sh "terraform apply --auto-approve"
+        //     }
+        // }
+        //     stage('Sleep 2 minute for warm up') {
+        //     steps {
+        //         sh "sleep 120"
+        //     }
+        // }
+        //      stage('Ansible Playbook run') {
+        //     steps {
+        //         sh '''
+        //          ansible-playbook -i "$(terraform output -raw instance_public_ip)," install_nginx.yml --extra-vars "host=$(terraform output -raw instance_public_ip) ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/my_aws_terraform_ansible_project/terraform_codes/mynewsshkey.pem"
+        //         '''
+        //     }
+        // }
     }
 }
