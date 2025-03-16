@@ -43,9 +43,9 @@ pipeline {
                     def instance_ip = sh(script: 'terraform output -raw instance_public_ip', returnStdout: true).trim()
 
                     // Run the Ansible playbook with the 'StrictHostKeyChecking=no' option
-                    sh """
+                    sh '''
                     ansible-playbook -i "$(terraform output -raw instance_public_ip)," install_nginx.yml --extra-vars "host=$(terraform output -raw instance_public_ip) ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/var/lib/jenkins/jobs/myproject/workspace/mynewsshkey.pem"
-                    """
+                    '''
                 }
             }
         }
