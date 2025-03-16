@@ -45,6 +45,8 @@ pipeline {
         }
              stage('Ansible Playbook run') {
             steps {
+
+                 def instance_ip = sh(script: 'terraform output -raw instance_public_ip', returnStdout: true).trim()
                 sh '''
                  ansible-playbook -i "$(terraform output -raw instance_public_ip)," install_nginx.yml --extra-vars "host=$(terraform output -raw instance_public_ip) ansible_ssh_user=ubuntu ansible_ssh_private_key_file=/home/ubuntu/my_aws_terraform_ansible_project/terraform_codes/mynewsshkey.pem"
                 '''
