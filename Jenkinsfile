@@ -34,12 +34,7 @@ pipeline {
                 sh "terraform apply --auto-approve"
             }
         }
-            stage('Terraform apply') {
-            steps {
-                sh "terraform apply --auto-approve"
-            }
-        }
-             stage('Sleep 2 minute for warm up') {
+            stage('Sleep 2 minute for warm up') {
             steps {
                 sh "sleep 120"
             }
