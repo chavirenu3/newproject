@@ -7,7 +7,7 @@ pipeline {
                 git url: "https://github.com/chavirenu3/newproject.git", branch: "main"
             }
         }
-    }
+    
 
         
         stage('Terraform INIT') {
@@ -22,5 +22,5 @@ pipeline {
                 sh "terraform plan"
             }
         }
-    
+    }
 }
